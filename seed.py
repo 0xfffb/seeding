@@ -38,10 +38,7 @@ class Seed:
         url = "https://seed.futunn.com/main/water"
         response = requests.post(url=url, headers=self._header(), cookies=self.cookies, data={"seed_id": seed_id})
         if response.status_code == 200:
-            return {
-                "status": response.json().get("status"),
-                "message": response.json().get("message")
-            }
+            return response.json()
         return {
                 "status": 400,
                 "message": "未知错误."

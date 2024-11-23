@@ -11,6 +11,11 @@ apt install python3.10
 ```bash
 pip3 install -r requirements
 ```
+> 设置 uid 和 web_sig
+```bash
+https://seed.futunn.com/
+cookie 获取 uid 和 web_sig
+```
 > 设置crontab脚本
 ```bash
 0 */2 * * * python3 path/main.py

@@ -39,12 +39,16 @@ def watering():
 
     seed_id = seed_info.get("seed_id")
     seed_level = seed_info.get("seed_level")
-
-    message = seed.water(seed_id)
-    if message.get("status") == 200:
-        logger.info("浇水成功: seed_id: {}, seed_level: {}, message: {}".format(seed_id, seed_level, message))
+    water_limit_num = seed_info.get("water_limit_num")
+    water_done_num = seed_info.get("water_done_num")
+    if (water_limit_num - water_done_num) > 0:
+        message = seed.water(seed_id)
+        if message.get("code") == 0:
+            logger.info("浇水成功: seed_id: {}, seed_level: {}, water_limit_num: {}, water_done_num: {}, message: {}".format(seed_id, seed_level, water_limit_num, water_done_num, message))
+        else:
+            logger.warning("浇水失败: seed_id: {}, seed_level: {}, water_limit_num: {}, water_done_num: {}, message: {}".format(seed_id, seed_level, water_limit_num, water_done_num, message))
     else:
-        logger.warning("浇水失败: seed_id: {}, seed_level: {}, message: {}".format(seed_id, seed_level, message))
+        logger.info("浇水次数上限: seed_id: {}, seed_level: {}, water_limit_num: {}, water_done_num: {}".format(seed_id, seed_level, water_limit_num, water_done_num))
     logger.info("结束浇水.")
 
 
@@ -55,4 +59,3 @@ if __name__ == '__main__':
     seed = Seed()
     watering()
     watering_friends()
-    pass
