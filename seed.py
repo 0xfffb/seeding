@@ -5,6 +5,7 @@ import requests
 from loguru import logger
 from config import uid, web_sig
 
+
 def requests_error_catcher(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -15,6 +16,7 @@ def requests_error_catcher(func):
         except Exception as e:
             logger.error("request exception: {}".format(e))
     return wrapper
+
 
 class Seed:
 
@@ -76,7 +78,9 @@ class Seed:
     def fert(self, uid_key):
         url = "https://seed.futunn.com/main/fert"
         response = requests.post(url=url, headers=self._header(), cookies=self.cookies, data={"invite_code": uid_key})
-        return response.json()
+        if response.json().get("code") == 0:
+            return True
+        return False
 
     @staticmethod
     def _random():
