@@ -1,3 +1,5 @@
 _config.py
 *.json
 *.log
+.venv
+.idea

@@ -38,17 +38,43 @@ def watering():
         return
 
     seed_id = seed_info.get("seed_id")
+    send_state = seed_info.get('send_state')
     seed_level = seed_info.get("seed_level")
-    water_limit_num = seed_info.get("water_limit_num")
-    water_done_num = seed_info.get("water_done_num")
-    if (water_limit_num - water_done_num) > 0:
-        message = seed.water(seed_id)
-        if message.get("code") == 0:
-            logger.info("浇水成功: seed_id: {}, seed_level: {}, water_limit_num: {}, water_done_num: {}, message: {}".format(seed_id, seed_level, water_limit_num, water_done_num, message))
-        else:
-            logger.warning("浇水失败: seed_id: {}, seed_level: {}, water_limit_num: {}, water_done_num: {}, message: {}".format(seed_id, seed_level, water_limit_num, water_done_num, message))
+    comm_affect_type = seed_info.get("comm_affect_type")
+    comm_affect_value = seed_info.get("comm_affect_value")
+    is_mature = seed_info.get("is_mature")
+    # 种子成熟
+    if is_mature == 1:
+        logger.info("种子成熟: seed_id: {}.".format(seed_id))
+        # 免佣种子
+        if comm_affect_type == 1:
+            pass
+        # 现金种子
+        if comm_affect_type == 3:
+            result = seed.use(seed_id)
+            if result:
+                logger.info("现金种子使用成功: seed_id: {}, seed_level: {}，comm_affect_type: {}, comm_affect_value: {}.".format(seed_id, seed_level, comm_affect_type, comm_affect_value))
+            else:
+                logger.warning("现金种子使用失败: seed_id: {}, seed_level: {}，comm_affect_type: {}, comm_affect_value: {}.".format(seed_id, seed_level, comm_affect_type, comm_affect_value))
+        # 积分种子
+        if comm_affect_type == 4:
+            result = seed.use(seed_id)
+            if result:
+                logger.info("积分种子使用成功: seed_id: {}, seed_level: {}，comm_affect_type: {}, comm_affect_value: {}.".format(seed_id, seed_level, comm_affect_type, comm_affect_value))
+            else:
+                logger.warning("积分种子使用失败: seed_id: {}, seed_level: {}，comm_affect_type: {}, comm_affect_value: {}.".format(seed_id, seed_level, comm_affect_type, comm_affect_value))
     else:
-        logger.info("浇水次数上限: seed_id: {}, seed_level: {}, water_limit_num: {}, water_done_num: {}".format(seed_id, seed_level, water_limit_num, water_done_num))
+        logger.info("种子未成熟: seed_id: {}.".format(seed_id))
+        water_limit_num = seed_info.get("water_limit_num")
+        water_done_num = seed_info.get("water_done_num")
+        if (water_limit_num - water_done_num) > 0:
+            message = seed.water(seed_id)
+            if message.get("code") == 0:
+                logger.info("浇水成功: seed_id: {}, seed_level: {}, water_limit_num: {}, water_done_num: {}, message: {}".format(seed_id, seed_level, water_limit_num, water_done_num, message))
+            else:
+                logger.warning("浇水失败: seed_id: {}, seed_level: {}, water_limit_num: {}, water_done_num: {}, message: {}".format(seed_id, seed_level, water_limit_num, water_done_num, message))
+        else:
+            logger.info("浇水次数上限: seed_id: {}, seed_level: {}, water_limit_num: {}, water_done_num: {}".format(seed_id, seed_level, water_limit_num, water_done_num))
     logger.info("结束浇水.")
 
 

@@ -3,7 +3,7 @@ import time
 import functools
 import requests
 from loguru import logger
-from config import uid, web_sig
+from _config import uid, web_sig
 
 
 def requests_error_catcher(func):
@@ -78,6 +78,16 @@ class Seed:
     def fert(self, uid_key):
         url = "https://seed.futunn.com/main/fert"
         response = requests.post(url=url, headers=self._header(), cookies=self.cookies, data={"invite_code": uid_key})
+        if response.json().get("code") == 0:
+            return True
+        return False
+
+    def use(self, seed_id):
+        url = "https://seed.futunn.com/main/use"
+        response = requests.post(url=url, headers=self._header(), cookies=self.cookies, data={
+            "seed_id": seed_id,
+            "account_base_type": "2"
+        })
         if response.json().get("code") == 0:
             return True
         return False
